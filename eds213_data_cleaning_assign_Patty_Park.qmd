@@ -1,0 +1,196 @@
+---
+title: "Data Cleaning"
+author: "Patty Park"
+format: html
+---
+
+Github link: 
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
+
+
+```{r}
+#| message: false  
+
+# Libraries
+library(tidyverse)
+
+#load in interested files
+# file names
+datadir_raw <- "data/raw/"
+
+datadir_processed <- "data/processed/"
+
+species_file <- "ASDN_Daily_species.csv"
+
+snowsurvey_file <- "ASDN_Snow_survey.csv"
+
+cover_clean <- "snow_cover.csv"
+```
+
+
+## Snow survey data
+
+### Data Exploration
+
+Import the snow survey
+
+```{r}
+# Import the species
+water_clean <- read_csv(file.path(datadir_processed, cover_clean))
+
+#take a look at the dataset
+glimpse(water_clean)
+
+```
+
+# `Water_cover` mutation
+
+Here, we see that that `Water_cover` and `Land_cover` are in a `chr` class and not a `dbl` class. I will go ahead and see what is in this column that is not a number.
+
+```{r}
+#look at the dataframe and see if there are inputs that are not numbers
+water_clean %>% 
+  count(Water_cover) %>% 
+  filter(is.na(as.numeric(Water_cover)))
+```
+
+Now that we found our culprit, we will go ahead and change those to NA that R can understand.
+
+```{r}
+#change unknown characters to NA
+water_fixed <- water_clean %>% 
+  #filter(Snow_cover == ".") %>%  #test that we filter out for snow cover equalling "."
+  mutate(Water_cover = ifelse(Water_cover == c(".", "-", "n/a", "unk"), NA, Water_cover)) #convert these symbols into NA that R can understand
+```
+
+```{r}
+#look at the dataframe and see if there are inputs that are not numbers
+water_fixed %>% 
+  count(Water_cover) %>% #count amount of observations in Water_cover column
+  filter(is.na(as.numeric(Water_cover))) #filter by those that are not numeric
+```
+
+
+Now, we are can convert this column into numeric and check once more to see if the class was accurately changed.
+```{r}
+#mutate the column into a numeric class
+water_fixed <- water_fixed %>% 
+  mutate(Water_cover = as.numeric(Water_cover))
+
+#look at dataframe and class to see if it was properly converted
+glimpse(water_fixed)
+```
+
+Now we will go ahead and see if the water_cover values are all between 0 and 100
+```{r}
+#see if this column have values over 100 or under 0
+water_fixed %>% 
+  filter(Water_cover > 100 | Water_cover < 0)
+```
+
+Turns out we have one column that has a water cover of over 100. Since it is just one observations and we cannot talk to the researcher that collected the data, let's go ahead get rid of that observation.
+
+```{r}
+#get rid of the observation that is above 100
+water_fixed <- water_fixed %>% 
+  filter(Water_cover <= 100 & Water_cover >= 0)
+
+#view that it has been properly removed
+water_fixed %>% 
+  filter(Water_cover > 100 | Water_cover < 0)
+```
+
+## `Land_cover` mutation
+
+Now we have fixed the `Water_cover` column. Let's go ahead and do the same for the `Land_cover` column. We will go ahead and repeat the steps that we did above here, but in one code chunk.
+
+```{r}
+#take a look at the dataset
+glimpse(water_fixed)
+
+#look at the dataframe and see if there are inputs that are not numbers
+water_fixed %>% 
+  count(Land_cover) %>% 
+  filter(is.na(as.numeric(Land_cover)))
+
+#change unwanted strings to NA
+snowsurvey_cleaned_full <- water_fixed %>% 
+  #filter(Snow_cover == ".") %>%  #test that we filter out for snow cover equaling "."
+  mutate(Land_cover = ifelse(Land_cover == c(".", "-", "n/a", "unk"), NA, Land_cover)) #convert these symbols into NA that R can understand
+
+#mutate the column into a numeric class
+snowsurvey_cleaned_full <- snowsurvey_cleaned_full %>% 
+  mutate(Land_cover = as.numeric(Land_cover)) #filter by those that are not numeric
+
+#see if this column have values over 100
+snowsurvey_cleaned_full %>% 
+  filter(Land_cover > 100 | Land_cover < 0)
+
+#get rid of the observation that is less than 0
+water_fixed <- water_fixed %>% 
+  filter(Water_cover <= 100 & Water_cover >= 0)
+
+#view that it has been properly removed
+water_fixed %>% 
+  filter(Water_cover > 100 | Water_cover < 0)
+
+#take a look at the classes to make sure they are all in numeric class
+glimpse(snowsurvey_cleaned_full)
+```
+
+## `Total_cover` mutation
+
+This particular column makes sure that whatever what put into the three previous columns all add up to 100. We will go ahead and check if this column have numbers that are different that 100
+
+```{r}
+#see if there are values other than 100 in the total_cover column
+snowsurvey_cleaned_full %>% 
+  count(Total_cover) %>% #count amount of observations in Water_cover column
+  filter(Total_cover != 100) #filter by those that are not 100
+```
+
+We have a bunch of observations where the `Total_cover` does not equal up to 100. Let's first mutate this column and add up the previous columns to see if our new dataframe corrected for this mistake from the mistaken observations.
+
+```{r}
+#sum up the Snow_cover, Water_cover, Land_cover and replace it with the Total_cover column
+snowsurvey_cleaned_full <- snowsurvey_cleaned_full %>% 
+  mutate(Total_cover = rowSums(across(c(Snow_cover, Water_cover, Land_cover))), #sum using the rowSums and across function
+         Total_cover = as.numeric(Total_cover)) #change the class of Total_cover to numeric
+
+#see if there are values other than 100 in the total_cover column
+snowsurvey_cleaned_full %>% 
+  count(Total_cover) %>% #count amount of observations in Total_cover column
+  filter(Total_cover != 100) #filter by those that are not 100
+```
+
+That didn't change much at all. All the number that we now have in the `Total_cover` column are all numeric, but they all still do not add up to 100. Since this is not what we are looking for in this column, I will go ahead and get rid of them overall. In a real case scenario, I would talk to the observers that took the measurements of these observations and ask their reasoning of how they got to this conclusion.
+
+```{r}
+#delete rows where the total_cover does not equal 100
+snowsurvey_cleaned_full <- snowsurvey_cleaned_full %>% 
+  filter(Total_cover == 100) #filter for rows where total_cover equals 100
+
+#make sure that the dataset was filtered correctly
+snowsurvey_cleaned_full %>% 
+  count(Total_cover) %>% #count amount of observations in Total_cover column
+  filter(Total_cover != 100) #filter by those that are not 100
+```
+
+Now we are all done cleaning up this dataset. I'll go ahead and output it as an csv that we can use for future use.
+
+```{r, echo=TRUE}
+#save new, cleaned up table as csv
+write_csv(snowsurvey_cleaned_full, file.path(datadir_processed, "snow_cover_cleaned.csv"))
+```
+
+
+
+
+
+
+
+
+

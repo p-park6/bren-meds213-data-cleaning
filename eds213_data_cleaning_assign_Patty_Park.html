@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Patty Park">
+
+<title>Data Cleaning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="eds213_data_cleaning_assign_Patty_Park_files/libs/clipboard/clipboard.min.js"></script>
+<script src="eds213_data_cleaning_assign_Patty_Park_files/libs/quarto-html/quarto.js"></script>
+<script src="eds213_data_cleaning_assign_Patty_Park_files/libs/quarto-html/popper.min.js"></script>
+<script src="eds213_data_cleaning_assign_Patty_Park_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="eds213_data_cleaning_assign_Patty_Park_files/libs/quarto-html/anchor.min.js"></script>
+<link href="eds213_data_cleaning_assign_Patty_Park_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="eds213_data_cleaning_assign_Patty_Park_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="eds213_data_cleaning_assign_Patty_Park_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="eds213_data_cleaning_assign_Patty_Park_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="eds213_data_cleaning_assign_Patty_Park_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Data Cleaning</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Patty Park </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#load in interested files</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># file names</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>datadir_raw <span class="ot">&lt;-</span> <span class="st">"data/raw/"</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>datadir_processed <span class="ot">&lt;-</span> <span class="st">"data/processed/"</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>species_file <span class="ot">&lt;-</span> <span class="st">"ASDN_Daily_species.csv"</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>snowsurvey_file <span class="ot">&lt;-</span> <span class="st">"ASDN_Snow_survey.csv"</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>cover_clean <span class="ot">&lt;-</span> <span class="st">"snow_cover.csv"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="snow-survey-data" class="level2">
+<h2 class="anchored" data-anchor-id="snow-survey-data">Snow survey data</h2>
+<section id="data-exploration" class="level3">
+<h3 class="anchored" data-anchor-id="data-exploration">Data Exploration</h3>
+<p>Import the snow survey</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import the species</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>water_clean <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">file.path</span>(datadir_processed, cover_clean))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#take a look at the dataset</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(water_clean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 42,830
+Columns: 11
+$ Site        &lt;chr&gt; "barr", "barr", "barr", "barr", "barr", "barr", "barr", "b…
+$ Year        &lt;dbl&gt; 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011…
+$ Date        &lt;chr&gt; "29-May-11", "29-May-11", "29-May-11", "29-May-11", "29-Ma…
+$ Plot        &lt;chr&gt; "brw1", "brw1", "brw1", "brw1", "brw1", "brw1", "brw1", "b…
+$ Location    &lt;chr&gt; "b10", "b12", "b2", "b4", "b6", "b8", "d10", "d12", "d2", …
+$ Snow_cover  &lt;dbl&gt; 90, 100, 90, 100, 95, 95, 95, 90, 95, 95, 90, 90, 95, 90, …
+$ Water_cover &lt;chr&gt; "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "10", "0…
+$ Land_cover  &lt;chr&gt; "10", "0", "10", "0", "5", "5", "5", "10", "5", "5", "0", …
+$ Total_cover &lt;chr&gt; "100", "100", "100", "100", "100", "100", "100", "100", "1…
+$ Observer    &lt;chr&gt; "adoll", "adoll", "adoll", "adoll", "adoll", "adoll", "ado…
+$ Notes       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="water_cover-mutation" class="level1">
+<h1><code>Water_cover</code> mutation</h1>
+<p>Here, we see that that <code>Water_cover</code> and <code>Land_cover</code> are in a <code>chr</code> class and not a <code>dbl</code> class. I will go ahead and see what is in this column that is not a number.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#look at the dataframe and see if there are inputs that are not numbers</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>water_clean <span class="sc">%&gt;%</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Water_cover) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(<span class="fu">as.numeric</span>(Water_cover)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+  Water_cover     n
+  &lt;chr&gt;       &lt;int&gt;
+1 -              10
+2 .             575
+3 n/a            32
+4 unk             1
+5 &lt;NA&gt;          149</code></pre>
+</div>
+</div>
+<p>Now that we found our culprit, we will go ahead and change those to NA that R can understand.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#change unknown characters to NA</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>water_fixed <span class="ot">&lt;-</span> water_clean <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#filter(Snow_cover == ".") %&gt;%  #test that we filter out for snow cover equalling "."</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Water_cover =</span> <span class="fu">ifelse</span>(Water_cover <span class="sc">==</span> <span class="fu">c</span>(<span class="st">"."</span>, <span class="st">"-"</span>, <span class="st">"n/a"</span>, <span class="st">"unk"</span>), <span class="cn">NA</span>, Water_cover)) <span class="co">#convert these symbols into NA that R can understand</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#look at the dataframe and see if there are inputs that are not numbers</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>water_fixed <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Water_cover) <span class="sc">%&gt;%</span> <span class="co">#count amount of observations in Water_cover column</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(<span class="fu">as.numeric</span>(Water_cover))) <span class="co">#filter by those that are not numeric</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+  Water_cover     n
+  &lt;chr&gt;       &lt;int&gt;
+1 -               7
+2 .             424
+3 n/a            24
+4 unk             1
+5 &lt;NA&gt;          311</code></pre>
+</div>
+</div>
+<p>Now, we are can convert this column into numeric and check once more to see if the class was accurately changed.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#mutate the column into a numeric class</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>water_fixed <span class="ot">&lt;-</span> water_fixed <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Water_cover =</span> <span class="fu">as.numeric</span>(Water_cover))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#look at dataframe and class to see if it was properly converted</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(water_fixed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 42,830
+Columns: 11
+$ Site        &lt;chr&gt; "barr", "barr", "barr", "barr", "barr", "barr", "barr", "b…
+$ Year        &lt;dbl&gt; 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011…
+$ Date        &lt;chr&gt; "29-May-11", "29-May-11", "29-May-11", "29-May-11", "29-Ma…
+$ Plot        &lt;chr&gt; "brw1", "brw1", "brw1", "brw1", "brw1", "brw1", "brw1", "b…
+$ Location    &lt;chr&gt; "b10", "b12", "b2", "b4", "b6", "b8", "d10", "d12", "d2", …
+$ Snow_cover  &lt;dbl&gt; 90, 100, 90, 100, 95, 95, 95, 90, 95, 95, 90, 90, 95, 90, …
+$ Water_cover &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ Land_cover  &lt;chr&gt; "10", "0", "10", "0", "5", "5", "5", "10", "5", "5", "0", …
+$ Total_cover &lt;chr&gt; "100", "100", "100", "100", "100", "100", "100", "100", "1…
+$ Observer    &lt;chr&gt; "adoll", "adoll", "adoll", "adoll", "adoll", "adoll", "ado…
+$ Notes       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…</code></pre>
+</div>
+</div>
+<p>Now we will go ahead and see if the water_cover values are all between 0 and 100</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#see if this column have values over 100 or under 0</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>water_fixed <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Water_cover <span class="sc">&gt;</span> <span class="dv">100</span> <span class="sc">|</span> Water_cover <span class="sc">&lt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 11
+  Site   Year Date  Plot  Location Snow_cover Water_cover Land_cover Total_cover
+  &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      
+1 barr   2011 8-Ju… brw5  l4               45         353 -298       100        
+# ℹ 2 more variables: Observer &lt;chr&gt;, Notes &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>Turns out we have one column that has a water cover of over 100. Since it is just one observations and we cannot talk to the researcher that collected the data, let’s go ahead get rid of that observation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#get rid of the observation that is above 100</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>water_fixed <span class="ot">&lt;-</span> water_fixed <span class="sc">%&gt;%</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Water_cover <span class="sc">&lt;=</span> <span class="dv">100</span> <span class="sc">&amp;</span> Water_cover <span class="sc">&gt;=</span> <span class="dv">0</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#view that it has been properly removed</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>water_fixed <span class="sc">%&gt;%</span> </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Water_cover <span class="sc">&gt;</span> <span class="dv">100</span> <span class="sc">|</span> Water_cover <span class="sc">&lt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 0 × 11
+# ℹ 11 variables: Site &lt;chr&gt;, Year &lt;dbl&gt;, Date &lt;chr&gt;, Plot &lt;chr&gt;,
+#   Location &lt;chr&gt;, Snow_cover &lt;dbl&gt;, Water_cover &lt;dbl&gt;, Land_cover &lt;chr&gt;,
+#   Total_cover &lt;chr&gt;, Observer &lt;chr&gt;, Notes &lt;chr&gt;</code></pre>
+</div>
+</div>
+<section id="land_cover-mutation" class="level2">
+<h2 class="anchored" data-anchor-id="land_cover-mutation"><code>Land_cover</code> mutation</h2>
+<p>Now we have fixed the <code>Water_cover</code> column. Let’s go ahead and do the same for the <code>Land_cover</code> column. We will go ahead and repeat the steps that we did above here, but in one code chunk.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#take a look at the dataset</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(water_fixed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 42,062
+Columns: 11
+$ Site        &lt;chr&gt; "barr", "barr", "barr", "barr", "barr", "barr", "barr", "b…
+$ Year        &lt;dbl&gt; 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011…
+$ Date        &lt;chr&gt; "29-May-11", "29-May-11", "29-May-11", "29-May-11", "29-Ma…
+$ Plot        &lt;chr&gt; "brw1", "brw1", "brw1", "brw1", "brw1", "brw1", "brw1", "b…
+$ Location    &lt;chr&gt; "b10", "b12", "b2", "b4", "b6", "b8", "d10", "d12", "d2", …
+$ Snow_cover  &lt;dbl&gt; 90, 100, 90, 100, 95, 95, 95, 90, 95, 95, 90, 90, 95, 90, …
+$ Water_cover &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ Land_cover  &lt;chr&gt; "10", "0", "10", "0", "5", "5", "5", "10", "5", "5", "0", …
+$ Total_cover &lt;chr&gt; "100", "100", "100", "100", "100", "100", "100", "100", "1…
+$ Observer    &lt;chr&gt; "adoll", "adoll", "adoll", "adoll", "adoll", "adoll", "ado…
+$ Notes       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#look at the dataframe and see if there are inputs that are not numbers</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>water_fixed <span class="sc">%&gt;%</span> </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Land_cover) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(<span class="fu">as.numeric</span>(Land_cover)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  Land_cover     n
+  &lt;chr&gt;      &lt;int&gt;
+1 .             14
+2 &lt;NA&gt;           1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#change unwanted strings to NA</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>snowsurvey_cleaned_full <span class="ot">&lt;-</span> water_fixed <span class="sc">%&gt;%</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#filter(Snow_cover == ".") %&gt;%  #test that we filter out for snow cover equaling "."</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Land_cover =</span> <span class="fu">ifelse</span>(Land_cover <span class="sc">==</span> <span class="fu">c</span>(<span class="st">"."</span>, <span class="st">"-"</span>, <span class="st">"n/a"</span>, <span class="st">"unk"</span>), <span class="cn">NA</span>, Land_cover)) <span class="co">#convert these symbols into NA that R can understand</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">#mutate the column into a numeric class</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>snowsurvey_cleaned_full <span class="ot">&lt;-</span> snowsurvey_cleaned_full <span class="sc">%&gt;%</span> </span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Land_cover =</span> <span class="fu">as.numeric</span>(Land_cover)) <span class="co">#filter by those that are not numeric</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co">#see if this column have values over 100</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>snowsurvey_cleaned_full <span class="sc">%&gt;%</span> </span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Land_cover <span class="sc">&gt;</span> <span class="dv">100</span> <span class="sc">|</span> Land_cover <span class="sc">&lt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 11
+  Site   Year Date  Plot  Location Snow_cover Water_cover Land_cover Total_cover
+  &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;      
+1 barr   2011 31-M… brw3  d10              NA           0       -100 100        
+# ℹ 2 more variables: Observer &lt;chr&gt;, Notes &lt;chr&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#get rid of the observation that is less than 0</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>water_fixed <span class="ot">&lt;-</span> water_fixed <span class="sc">%&gt;%</span> </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Water_cover <span class="sc">&lt;=</span> <span class="dv">100</span> <span class="sc">&amp;</span> Water_cover <span class="sc">&gt;=</span> <span class="dv">0</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#view that it has been properly removed</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>water_fixed <span class="sc">%&gt;%</span> </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Water_cover <span class="sc">&gt;</span> <span class="dv">100</span> <span class="sc">|</span> Water_cover <span class="sc">&lt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 0 × 11
+# ℹ 11 variables: Site &lt;chr&gt;, Year &lt;dbl&gt;, Date &lt;chr&gt;, Plot &lt;chr&gt;,
+#   Location &lt;chr&gt;, Snow_cover &lt;dbl&gt;, Water_cover &lt;dbl&gt;, Land_cover &lt;chr&gt;,
+#   Total_cover &lt;chr&gt;, Observer &lt;chr&gt;, Notes &lt;chr&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#take a look at the classes to make sure they are all in numeric class</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(snowsurvey_cleaned_full)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 42,062
+Columns: 11
+$ Site        &lt;chr&gt; "barr", "barr", "barr", "barr", "barr", "barr", "barr", "b…
+$ Year        &lt;dbl&gt; 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011…
+$ Date        &lt;chr&gt; "29-May-11", "29-May-11", "29-May-11", "29-May-11", "29-Ma…
+$ Plot        &lt;chr&gt; "brw1", "brw1", "brw1", "brw1", "brw1", "brw1", "brw1", "b…
+$ Location    &lt;chr&gt; "b10", "b12", "b2", "b4", "b6", "b8", "d10", "d12", "d2", …
+$ Snow_cover  &lt;dbl&gt; 90, 100, 90, 100, 95, 95, 95, 90, 95, 95, 90, 90, 95, 90, …
+$ Water_cover &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ Land_cover  &lt;dbl&gt; 10, 0, 10, 0, 5, 5, 5, 10, 5, 5, 0, 10, 5, 10, 20, 10, 5, …
+$ Total_cover &lt;chr&gt; "100", "100", "100", "100", "100", "100", "100", "100", "1…
+$ Observer    &lt;chr&gt; "adoll", "adoll", "adoll", "adoll", "adoll", "adoll", "ado…
+$ Notes       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…</code></pre>
+</div>
+</div>
+</section>
+<section id="total_cover-mutation" class="level2">
+<h2 class="anchored" data-anchor-id="total_cover-mutation"><code>Total_cover</code> mutation</h2>
+<p>This particular column makes sure that whatever what put into the three previous columns all add up to 100. We will go ahead and check if this column have numbers that are different that 100</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#see if there are values other than 100 in the total_cover column</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>snowsurvey_cleaned_full <span class="sc">%&gt;%</span> </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Total_cover) <span class="sc">%&gt;%</span> <span class="co">#count amount of observations in Water_cover column</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Total_cover <span class="sc">!=</span> <span class="dv">100</span>) <span class="co">#filter by those that are not 100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 32 × 2
+   Total_cover     n
+   &lt;chr&gt;       &lt;int&gt;
+ 1 0            1509
+ 2 10            481
+ 3 102             1
+ 4 105             5
+ 5 108             1
+ 6 110            13
+ 7 120             1
+ 8 15              9
+ 9 20            300
+10 25              4
+# ℹ 22 more rows</code></pre>
+</div>
+</div>
+<p>We have a bunch of observations where the <code>Total_cover</code> does not equal up to 100. Let’s first mutate this column and add up the previous columns to see if our new dataframe corrected for this mistake from the mistaken observations.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#sum up the Snow_cover, Water_cover, Land_cover and replace it with the Total_cover column</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>snowsurvey_cleaned_full <span class="ot">&lt;-</span> snowsurvey_cleaned_full <span class="sc">%&gt;%</span> </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Total_cover =</span> <span class="fu">rowSums</span>(<span class="fu">across</span>(<span class="fu">c</span>(Snow_cover, Water_cover, Land_cover))), <span class="co">#sum using the rowSums and across function</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">Total_cover =</span> <span class="fu">as.numeric</span>(Total_cover)) <span class="co">#change the class of Total_cover to numeric</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co">#see if there are values other than 100 in the total_cover column</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>snowsurvey_cleaned_full <span class="sc">%&gt;%</span> </span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Total_cover) <span class="sc">%&gt;%</span> <span class="co">#count amount of observations in Total_cover column</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Total_cover <span class="sc">!=</span> <span class="dv">100</span>) <span class="co">#filter by those that are not 100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 32 × 2
+   Total_cover     n
+         &lt;dbl&gt; &lt;int&gt;
+ 1           0  1281
+ 2           3     1
+ 3           5    24
+ 4           6     1
+ 5           9    36
+ 6          10   515
+ 7          15    10
+ 8          20   313
+ 9          25     4
+10          30   292
+# ℹ 22 more rows</code></pre>
+</div>
+</div>
+<p>That didn’t change much at all. All the number that we now have in the <code>Total_cover</code> column are all numeric, but they all still do not add up to 100. Since this is not what we are looking for in this column, I will go ahead and get rid of them overall. In a real case scenario, I would talk to the observers that took the measurements of these observations and ask their reasoning of how they got to this conclusion.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#delete rows where the total_cover does not equal 100</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>snowsurvey_cleaned_full <span class="ot">&lt;-</span> snowsurvey_cleaned_full <span class="sc">%&gt;%</span> </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Total_cover <span class="sc">==</span> <span class="dv">100</span>) <span class="co">#filter for rows where total_cover equals 100</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co">#make sure that the dataset was filtered correctly</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>snowsurvey_cleaned_full <span class="sc">%&gt;%</span> </span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Total_cover) <span class="sc">%&gt;%</span> <span class="co">#count amount of observations in Total_cover column</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Total_cover <span class="sc">!=</span> <span class="dv">100</span>) <span class="co">#filter by those that are not 100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 0 × 2
+# ℹ 2 variables: Total_cover &lt;dbl&gt;, n &lt;int&gt;</code></pre>
+</div>
+</div>
+<p>Now we are all done cleaning up this dataset. I’ll go ahead and output it as an csv that we can use for future use.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#save new, cleaned up table as csv</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(snowsurvey_cleaned_full, <span class="fu">file.path</span>(datadir_processed, <span class="st">"snow_cover_cleaned.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
