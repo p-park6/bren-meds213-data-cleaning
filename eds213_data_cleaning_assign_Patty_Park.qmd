@@ -4,7 +4,7 @@ author: "Patty Park"
 format: html
 ---
 
-Github link: 
+Github link: https://github.com/p-park6/bren-meds213-data-cleaning
 
 ```{r, include=FALSE}
 knitr::opts_chunk$set(message = FALSE, warning = FALSE)

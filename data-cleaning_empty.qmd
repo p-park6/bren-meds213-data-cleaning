@@ -135,7 +135,7 @@ Ok, we can do the transformation:
 ```{r}
 
 snowsurvey_fixed <- snowsurvey_fixed %>% 
-  mutate(Snow_cover == as.numeric(Snow_cover))
+  mutate(Snow_cover = as.numeric(Snow_cover))
 
 
 glimpse(snowsurvey_fixed)
